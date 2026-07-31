@@ -1,0 +1,16 @@
+services:
+
+  lap-api:
+
+    build:
+      context: ./backend
+
+    container_name: lap-api
+
+    restart: unless-stopped
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./backend:/app
