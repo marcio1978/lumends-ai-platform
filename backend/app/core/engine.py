@@ -1,25 +1,30 @@
 """
 LAP Engine
 
-Ponto central de execução dos agentes.
+Controlador principal do agente.
 """
 
-from app.core.state import AgentState
-from app.core.workflow import LAPWorkflow
+from app.core.burr.workflow import create_workflow
 
 
 class LAPEngine:
 
-    def __init__(self):
-        self.workflow = LAPWorkflow()
+    def process(self, message: str):
 
-    def process(self, message: str) -> AgentState:
-        """
-        Entrada principal do LAP.
-        """
+        workflow = create_workflow(message)
 
-        state = AgentState(
-            message=message
+        result = workflow.run(
+            halt_after=[
+                "generate_response"
+            ]
         )
 
-        return self.workflow.execute(state)
+        # O Burr retorna uma tupla contendo:
+        # (última ação, resultado, estado)
+
+        state = result[2]
+
+        return {
+            "message": state["message"],
+            "response": state["response"]
+        }
